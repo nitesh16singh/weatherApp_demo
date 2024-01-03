@@ -1,0 +1,30 @@
+version: "2"
+services:
+  mongo_db:
+    container_name: "mongo"
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    ports:
+      - 27017:27017
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - 6379:6379
+
+  demo_app:
+    container_name: "demo_app"
+    image: demo_app:latest
+    depends_on: 
+      - mongo_db
+      - redis
+    ports:
+      - 3000:3000
+    links: 
+      - redis  
+    volumes:
+      - type: bind
+        source: .
+        target: /usr/src/app/
+    working_dir: /usr/src/app
